@@ -1,3 +1,3 @@
 # UnrealWordWrap
 
-Unreal Engine Word Wrap written in C++ for Blueprints
+Unreal Engine Word Wrap is written in C++ for Blueprints
