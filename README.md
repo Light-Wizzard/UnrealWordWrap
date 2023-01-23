@@ -38,8 +38,6 @@ Snapshot of wrap
 
 ## Video
 
-Still uploading.
-
 [You Tube Channel for Light-Wizzard](https://youtu.be/BcjAi03d6eE)
 
 This video will explain how I implemented Word Wrap in Unreal Engine's Text Render, this project is written in C++, and it can read and write files to the Content Folder, I use the Movies folder to make sure my text files get into the game once deployed. 
@@ -70,8 +68,8 @@ I am a Linux guy that is forced to work in Windows, but I do test things in Linu
 
 ## Downloads
 
-This has not finished uploading, I will delete this warning after it uploads, it is very slow, 236 kbs.
+This has not finished uploading, I will delete this warning after it uploads, it is very slow, 236 kbs, ETA is around 11 PM PST January 22 2023.
 
-[Unreal Engine Project File Zipped is over 3 GB](https://lightwizzard.com/github/UnrealWordWrap.zip)
+[Unreal Engine Project File Zipped is around 3.77 GB](https://lightwizzard.com/github/UnrealWordWrap.zip)
 
 ### End-of-File
