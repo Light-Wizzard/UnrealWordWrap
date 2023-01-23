@@ -1,4 +1,4 @@
-﻿/*
+/*
  * UnrealWordWrap is Unreal Engine Word Wrap written in C++ for Blueprints and is Free Unlicensed Open Source.
  * Written by Jeffrey Scott Flesher
  * https://github.com/Light-Wizzard/UnrealWordWrap
@@ -18,10 +18,9 @@ bool UBFL_UnrealWordWrap::LoadTxtFile(FString inputFileName, FString& textOut)
     {
         return FFileHelper::LoadFileToString(textOut, *(FPaths::ProjectContentDir() + inputFileName));
     }
-    // Debug
+    // You should not get here: Debug
     FString ProjectDirectory = FPaths::ProjectContentDir();
     UE_LOG(LogTemp, Error, TEXT("LoadTxtFile FilePaths: ProjectContentDir: %s"), *ProjectDirectory)
-
     return false;
 }
 // ****************************************************************************
@@ -45,17 +44,15 @@ bool UBFL_UnrealWordWrap::SaveTxtFile(FString outputFileName, FString saveText)
 bool UBFL_UnrealWordWrap::IsFile(FString fileName, FString& absolutePath)
 {
     FString ProjectDirectory = FPaths::ProjectDir();
-    // Try ProjectDir
+    // Prepend ProjectContentDir
     if (FPlatformFileManager::Get().GetPlatformFile().FileExists(*(FPaths::ProjectContentDir() + fileName)))
     {
         absolutePath = FPlatformFileManager::Get().GetPlatformFile().ConvertToAbsolutePathForExternalAppForRead(*(FPaths::ProjectContentDir() + fileName));
         return true;
     }
-    // Debug it
-    // 
+    // You should not get here: Debug it
     ProjectDirectory = FPaths::ProjectContentDir();
     UE_LOG(LogTemp, Error, TEXT("FilePaths: ProjectContentDir: %s"), *ProjectDirectory);
-
     return false;
 }
 // ****************************************************************************
@@ -80,9 +77,9 @@ bool UBFL_UnrealWordWrap::WrapTxt(FString inputText, int32 wrapAt, FString& text
         textOut = inputText;
         return true;
     }
-    // LF
+    // LF Line Feed
     TCHAR TheLineFeed = '\n';
-    // CR 
+    // CR Carriage Return
     TCHAR TheCarriageReturn = '\r';
     // Tab
     TCHAR TheTab = '\t';
@@ -93,9 +90,6 @@ bool UBFL_UnrealWordWrap::WrapTxt(FString inputText, int32 wrapAt, FString& text
     // Line Feed String
     FString LF;
     LF.AppendChar(TheLineFeed);
-    // Carriage Return
-    FString CR;
-    CR.AppendChar(TheCarriageReturn);
     // Set the Index
     int32 TheIndex = 0;
     int32 TheCounter, TheBackTrack, TheLastIndex = -1;
@@ -123,6 +117,7 @@ bool UBFL_UnrealWordWrap::WrapTxt(FString inputText, int32 wrapAt, FString& text
             }
             else
             {
+                // There a lot of characters that you do not see in documents
                 UE_LOG(LogTemp, Error, TEXT("Removed this character: %s"), inputText[TheCounter]);
             }
         }
