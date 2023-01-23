@@ -22,3 +22,10 @@ Rebuild
 
 UI Save
 ![Blueprint](https://github.com/Light-Wizzard/UnrealWordWrap/blob/main/images/SaveWrapper.png)
+
+
+Main Menu where you can edit the file
+![Blueprint](https://github.com/Light-Wizzard/UnrealWordWrap/blob/main/images/MainMenu.png)
+
+Snapshot of wrap
+![Blueprint](https://github.com/Light-Wizzard/UnrealWordWrap/blob/main/images/Snapshot.png)
