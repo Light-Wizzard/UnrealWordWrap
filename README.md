@@ -68,7 +68,7 @@ I am a Linux guy that is forced to work in Windows, but I do test things in Linu
 
 ## Downloads
 
-This has not finished uploading, I will delete this warning after it uploads, it is very slow, 236 kbs, ETA is around 11 PM PST January 22 2023.
+This has not finished uploading, I will delete this warning after it uploads, but maybe not tonight, it is late, and I do not want to stay up waiting for this, it is very slow, 236 kbs, ETA is around 11 PM PST January 22 2023.
 
 [Unreal Engine Project File Zipped is around 3.77 GB](https://lightwizzard.com/github/UnrealWordWrap.zip)
 
