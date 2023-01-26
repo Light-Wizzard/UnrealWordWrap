@@ -38,7 +38,7 @@ Snapshot of wrap
 
 ## Video
 
-[You Tube Channel for Light-Wizzard](https://youtu.be/BcjAi03d6eE)
+[You Tube Channel for Light-Wizzard](https://youtu.be/fm2P9hJGLTA)
 
 This video will explain how I implemented Word Wrap in Unreal Engine's Text Render, this project is written in C++, and it can read and write files to the Content Folder, I use the Movies folder to make sure my text files get into the game once deployed. 
 
