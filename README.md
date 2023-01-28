@@ -62,9 +62,13 @@ I hope this function will help you with your application.
 
 ## Game-Release
 
-I am a Linux guy that is forced to work in Windows, but I do test things in Linux.
+I am a Linux guy that is forced to work in Windows, but I do test things in Linux when I am using it.
 
-[Game-Release Windows only](https://github.com/Light-Wizzard/UnrealWordWrap/releases/download/WindowsUnrealWordWrap/Windows.zip)
+* [Game-Release Windows only](https://github.com/Light-Wizzard/UnrealWordWrap/releases/download/WindowsUnrealWordWrap/Windows.zip)
+* [Linux](https://github.com/Light-Wizzard/UnrealWordWrap/releases/download/Linux/Linux.zip)
+* [Linux ARM 64](https://github.com/Light-Wizzard/UnrealWordWrap/releases/download/LinuxArm64/LinuxArm64.zip)
+
+I do not have a Mac or iOS so I cannot make those releases, but I do have the source that you can compile on any device I do not have.
 
 ## Downloads
 
