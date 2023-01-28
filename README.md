@@ -64,9 +64,22 @@ I hope this function will help you with your application.
 
 I am a Linux guy that is forced to work in Windows, but I do test things in Linux when I am using it.
 
+### Windows 10 or Greater
+
 * [Game-Release Windows only](https://github.com/Light-Wizzard/UnrealWordWrap/releases/download/WindowsUnrealWordWrap/Windows.zip)
+
+### Linux
+
 * [Linux](https://github.com/Light-Wizzard/UnrealWordWrap/releases/download/Linux/Linux.zip)
 * [Linux ARM 64](https://github.com/Light-Wizzard/UnrealWordWrap/releases/download/LinuxArm64/LinuxArm64.zip)
+
+### Android
+
+* [Android_ASTC](https://github.com/Light-Wizzard/UnrealWordWrap/releases/download/Android_ASTC/Android_ASTC.zip)
+* [Android_DXT](https://github.com/Light-Wizzard/UnrealWordWrap/releases/download/Android_DXT/Android_DXT.zip)
+* [Android_ETC2](https://github.com/Light-Wizzard/UnrealWordWrap/releases/download/Android_ETC2/Android_ETC2.zip)
+* [Android_Multi](https://github.com/Light-Wizzard/UnrealWordWrap/releases/download/Android_Multi/Android_Multi.zip)
+
 
 I do not have a Mac or iOS so I cannot make those releases, but I do have the source that you can compile on any device I do not have.
 
