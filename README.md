@@ -70,6 +70,8 @@ I am a Linux guy that is forced to work in Windows, but I do test things in Linu
 
 I only made the Windows version for now, if you want Linux let me know, I will try to get back to this and make one for it, I do not have a Mac or iOS License so I cannot make those packages, but here is the Soure, you can make it yourself.
 
+Uploading new version!
+
 [Unreal Engine Project File Zipped is around 3.77 GB](https://lightwizzard.com/github/UnrealWordWrap.zip)
 
 ### End-of-File
