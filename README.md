@@ -89,6 +89,8 @@ I only made the Windows version for now, if you want Linux let me know, I will t
 
 Uploading new version!
 
-[Unreal Engine Project File Zipped is around 3.77 GB](https://lightwizzard.com/github/UnrealWordWrap.zip)
+You will find a clean.bat I run to cut the size from 4 GB to 1.78 GB, you will need to right click on the project file UnrealWordWrap.uproject, and Generate Visual Studeo Project Files, and rebuild the project, then open the project in Unreal Engine, I rebuild, not sure if it is required.
+
+[Unreal Engine Project File Zipped is around 1.78 GB](https://lightwizzard.com/github/UnrealWordWrap.zip)
 
 ### End-of-File
