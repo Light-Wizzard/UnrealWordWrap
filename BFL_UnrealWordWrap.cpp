@@ -69,19 +69,9 @@ bool UBFL_UnrealWordWrap::WrapTxt(FString InputText, int32 WrapAt, int32 TabLen,
     // Sanity Chech If text is less than the Wrap At then return the Text
     if (InputText.Len() < 1) { TextOut.Empty(); return false; }
     else if (InputText.Len() < WrapAt) { TextOut = InputText; return true; }
-    // LF Line Feed
-    TCHAR TheLineFeed = '\n';
-    // CR Carriage Return
-    TCHAR TheCarriageReturn = '\r';
-    // Tab
-    TCHAR TheTab = '\t';
-    // Backspace
-    TCHAR TheBackspace = '\b';
-    // Form Feed
-    TCHAR TheFormFeed = '\f';
     // Line Feed String
-    FString LF;
-    LF.AppendChar(TheLineFeed);
+    FString TheLineFeed;
+    TheLineFeed.AppendChar('\n');
     // Set the Index
     int32 TheIndex = 0;
     int32 TheCounter, TheBackTrack, TheLastIndex = -1;
@@ -92,11 +82,11 @@ bool UBFL_UnrealWordWrap::WrapTxt(FString InputText, int32 WrapAt, int32 TabLen,
     for (TheCounter = 0; TheCounter < InputText.Len(); TheCounter++)
     {
         // CRLF \r\n
-        if (InputText[TheCounter] == TheCarriageReturn)
+        if (InputText[TheCounter] == '\r')
         {
-            if (InputText.Len() >= TheCounter + 1) { if (InputText[TheCounter + 1] == TheLineFeed) { continue; } }
+            if (InputText.Len() >= TheCounter + 1) { if (InputText[TheCounter + 1] == '\n') { continue; } }
         }
-        else if (InputText[TheCounter] == TheTab || InputText[TheCounter] == TheBackspace || InputText[TheCounter] == TheFormFeed)
+        else if (InputText[TheCounter] == '\t' || InputText[TheCounter] == '\b' || InputText[TheCounter] == '\f')
         {
             // Remove Tabs if less than 1
             if (TabLen > 0)
@@ -125,9 +115,11 @@ bool UBFL_UnrealWordWrap::WrapTxt(FString InputText, int32 WrapAt, int32 TabLen,
             }
         }
     } // end for (TheCounter
+    bool IsFirstChar;
     // While we have input text
     while (TheIndex < TheInputText.Len())
     {
+        IsFirstChar = true;
         // Working with the copy of the input string
         for (TheCounter = 1; TheCounter <= WrapAt; TheCounter++)
         {
@@ -136,26 +128,28 @@ bool UBFL_UnrealWordWrap::WrapTxt(FString InputText, int32 WrapAt, int32 TabLen,
             {
                 // Note I used LF \n in file, if you want to use this for LF, or CRLF,
                 // then change HTML br tage to what you want, and append a LF
-                if (BreakTxt(TextOut, TextOut)) { return true; }
+                if (BreakTxt(TextOut, TextOut))
+                {
+                    return true;
+                }
                 else { return false; }
-                return (TextOut.Len() > 0);
             }
             // Check for Line Feed tag we inserted into the original string 
             // to reset the counter and add br
-            if (TheInputText[TheIndex] == TheCarriageReturn)
+            if (TheInputText[TheIndex] == '\r')
             {
                 /* ************************************************************
-                *  We are converting all CRLF to LF, normally only the last 
-                *  character is a line feed, the Line Feeds get turned into the 
-                *  HTML tag <br> for Unreal Engine, we remove all Tabs or replace 
+                *  We are converting all CRLF to LF, normally only the last
+                *  character is a line feed, the Line Feeds get turned into the
+                *  HTML tag <br> for Unreal Engine, we remove all Tabs or replace
                 *  with spaces, codes that show up as a box becasue it does not understand it,
                 *  we have a filter for this below.
-                */ 
-                TextOut.AppendChar(TheLineFeed); // Mark Line Feed \n
+                */
+                TextOut.AppendChar('\n'); // Mark Line Feed \n
                 // If the next character is another Line Feed, skip it, it is part of the CRLF
                 if (TheInputText.Len() < TheIndex + 1)
                 {
-                    if (TheInputText[TheIndex + 1] == TheLineFeed)
+                    if (TheInputText[TheIndex + 1] == '\n')
                     {
                         TheCounter = 1; // Reset the Counter
                         continue;
@@ -163,9 +157,9 @@ bool UBFL_UnrealWordWrap::WrapTxt(FString InputText, int32 WrapAt, int32 TabLen,
                 }
                 TheCounter = 1; // Reset the Counter
             }
-            else if (TheInputText[TheIndex] == TheLineFeed) // We removed any CR in an CRLF
+            else if (TheInputText[TheIndex] == '\n') // We removed any CR in an CRLF
             {
-                TextOut.AppendChar(TheLineFeed); // Mark Line Feed \n
+                TextOut.AppendChar('\n'); // Mark Line Feed \n
                 TheCounter = 1; // Reset the Counter
             }
             else
@@ -181,64 +175,93 @@ bool UBFL_UnrealWordWrap::WrapTxt(FString InputText, int32 WrapAt, int32 TabLen,
                     if (theCharacter == 28 || theCharacter == 29) { theCharacter = '"'; }
                     // Switch from the fancy ' to the one that you can see in UE
                     if (theCharacter == 24 || theCharacter == 25) { theCharacter = 39; }
-                    TextOut.AppendChar(theCharacter);
+                    if (IsFirstChar)
+                    {
+                        IsFirstChar = false;
+                        if (theCharacter != ' ')
+                        {
+                            TextOut.AppendChar(theCharacter);
+                        }
+                    }
+                    else
+                    {
+                        TextOut.AppendChar(theCharacter);
+                    }
                 }
             }
             TheIndex++; // Increament the Index
         } // end for (theCounter
         // We ran to the End of this Line
-        // Check for space
-        if (isspace(TheInputText[TheIndex]))
+            // Set the Back Text
+        int32 TheStart = TheIndex - WrapAt;
+        if (TheStart < 0) { TheStart = 0; }
+        FString TheBackText = TheInputText.Mid(TheStart, WrapAt);
+        // Look for characters we can wrap at in this order
+        TArray<FString> TheBreakItems;
+        if (TheBackText.Contains(TheLineFeed)) { TheBreakItems.Add(TheLineFeed); }
+        if (TheBackText.Contains(" ")) { TheBreakItems.Add(TEXT(" ")); }
+        if (TheBackText.Contains(".")) { TheBreakItems.Add(TEXT(".")); }
+        if (TheBackText.Contains(";")) { TheBreakItems.Add(TEXT(";")); }
+        if (TheBackText.Contains("?")) { TheBreakItems.Add(TEXT("?")); }
+        if (TheBackText.Contains("!")) { TheBreakItems.Add(TEXT("!")); }
+        if (TheBackText.Contains(":")) { TheBreakItems.Add(TEXT(":")); }
+        if (TheBackText.Contains("\\")) { TheBreakItems.Add(TEXT("\\")); }
+        if (TheBackText.Contains("/")) { TheBreakItems.Add(TEXT("/")); }
+        if (TheBackText.Contains("|")) { TheBreakItems.Add(TEXT("|")); }
+        if (TheBackText.Contains("-")) { TheBreakItems.Add(TEXT("-")); }
+        if (TheBackText.Contains("_")) { TheBreakItems.Add(TEXT("_")); }
+        if (TheBackText.Contains("&")) { TheBreakItems.Add(TEXT("&")); }
+        if (TheBackText.Contains("*")) { TheBreakItems.Add(TEXT("*")); }
+        if (TheBackText.Contains("=")) { TheBreakItems.Add(TEXT("=")); }
+        if (TheBackText.Contains("+")) { TheBreakItems.Add(TEXT("+")); }
+        if (TheBackText.Contains("<")) { TheBreakItems.Add(TEXT("<")); }
+        if (TheBackText.Contains(">")) { TheBreakItems.Add(TEXT(">")); }
+        if (TheBackText.Contains("[")) { TheBreakItems.Add(TEXT("[")); }
+        if (TheBackText.Contains("]")) { TheBreakItems.Add(TEXT("]")); }
+        if (TheBackText.Contains("{")) { TheBreakItems.Add(TEXT("{")); }
+        if (TheBackText.Contains("}")) { TheBreakItems.Add(TEXT("}")); }
+        if (TheBackText.Contains("(")) { TheBreakItems.Add(TEXT("(")); }
+        if (TheBackText.Contains(")")) { TheBreakItems.Add(TEXT(")")); }
+        if (TheBackText.Contains("@")) { TheBreakItems.Add(TEXT("@")); }
+        if (TheBackText.Contains("#")) { TheBreakItems.Add(TEXT("#")); }
+        if (TheBackText.Contains("$")) { TheBreakItems.Add(TEXT("$")); }
+        if (TheBackText.Contains("%")) { TheBreakItems.Add(TEXT("%")); }
+        if (TheBackText.Contains("^")) { TheBreakItems.Add(TEXT("^")); }
+        if (TheBackText.Contains("~")) { TheBreakItems.Add(TEXT("~")); }
+        // The comman in a sentence is one thing, a number is another, so put at end
+        if (TheBackText.Contains(",")) { TheBreakItems.Add(TEXT(",")); }
+        // This is last, not nice to break on don't, but ok for 'LongLine'
+        if (TheBackText.Contains("`")) { TheBreakItems.Add(TEXT("`")); }
+        // Check for nearest space or other character in the list
+        int32 TheBackline = 0;
+        // We make TheChar an FString only the first character holds data
+        FString TheChar;
+        FString ThisChar;
+        bool IsBraakable = false;
+        int32 TheTextOutIndex;
+        TheChar.Empty();
+        TheChar.AppendChar(TheInputText[TheIndex]);
+        // Compare Breakable character to input
+        for (int32 i = 0; i < TheBreakItems.Num(); i++)
         {
-            TextOut.AppendChar(TheLineFeed); // Mark Line Feed
+            if (i > TheBreakItems.Num() - 1) { break; }
+            if (TheChar.Compare(TheBreakItems[i]) == 0)
+            {
+                IsBraakable = true;
+                break;
+            }
+        } // end for i
+        // Check for IsBraakable
+        if (IsBraakable)
+        {
+            TextOut.AppendChar('\n'); // Mark Line Feed
             TheCounter = 1; // Reset the Counter
         }
         else
         {
-            // Set the Back Text
-            FString TheBackText = TheInputText.Mid(TheIndex - 20, WrapAt);
-            // Look for characters we can wrap at
-            TArray<FString> TheBreakItems;
-            if (TheBackText.Contains(LF))   { TheBreakItems.Add(LF);         }
-            if (TheBackText.Contains(" "))  { TheBreakItems.Add(TEXT(" "));  }
-            if (TheBackText.Contains("."))  { TheBreakItems.Add(TEXT("."));  }
-            if (TheBackText.Contains(","))  { TheBreakItems.Add(TEXT(","));  }
-            if (TheBackText.Contains(";"))  { TheBreakItems.Add(TEXT(";"));  }
-            if (TheBackText.Contains("?"))  { TheBreakItems.Add(TEXT("?"));  }
-            if (TheBackText.Contains("!"))  { TheBreakItems.Add(TEXT("!"));  }
-            if (TheBackText.Contains(":"))  { TheBreakItems.Add(TEXT(":"));  }
-            if (TheBackText.Contains("\\")) { TheBreakItems.Add(TEXT("\\")); }
-            if (TheBackText.Contains("/"))  { TheBreakItems.Add(TEXT("/"));  }
-            if (TheBackText.Contains("|"))  { TheBreakItems.Add(TEXT("|"));  }
-            if (TheBackText.Contains("-"))  { TheBreakItems.Add(TEXT("-"));  }
-            if (TheBackText.Contains("_"))  { TheBreakItems.Add(TEXT("_"));  }
-            if (TheBackText.Contains("&"))  { TheBreakItems.Add(TEXT("&"));  }
-            if (TheBackText.Contains("*"))  { TheBreakItems.Add(TEXT("*"));  }
-            if (TheBackText.Contains("="))  { TheBreakItems.Add(TEXT("="));  }
-            if (TheBackText.Contains("+"))  { TheBreakItems.Add(TEXT("+"));  }
-            if (TheBackText.Contains("<"))  { TheBreakItems.Add(TEXT("<"));  }
-            if (TheBackText.Contains(">"))  { TheBreakItems.Add(TEXT(">"));  }
-            if (TheBackText.Contains("["))  { TheBreakItems.Add(TEXT("["));  }
-            if (TheBackText.Contains("]"))  { TheBreakItems.Add(TEXT("]"));  }
-            if (TheBackText.Contains("{"))  { TheBreakItems.Add(TEXT("{"));  }
-            if (TheBackText.Contains("}"))  { TheBreakItems.Add(TEXT("}"));  }
-            if (TheBackText.Contains("("))  { TheBreakItems.Add(TEXT("("));  }
-            if (TheBackText.Contains(")"))  { TheBreakItems.Add(TEXT(")"));  }
-            if (TheBackText.Contains("@"))  { TheBreakItems.Add(TEXT("@"));  }
-            if (TheBackText.Contains("#"))  { TheBreakItems.Add(TEXT("#"));  }
-            if (TheBackText.Contains("$"))  { TheBreakItems.Add(TEXT("$"));  }
-            if (TheBackText.Contains("%"))  { TheBreakItems.Add(TEXT("%"));  }
-            if (TheBackText.Contains("^"))  { TheBreakItems.Add(TEXT("^"));  }
-            if (TheBackText.Contains("~"))  { TheBreakItems.Add(TEXT("~"));  }
-            // This is last, not nice to break on don't, but ok for 'LongLine'
-            if (TheBackText.Contains("`"))  { TheBreakItems.Add(TEXT("`"));  }
-            // Check for nearest space or other character in the list
-            int32 TheBackline = 0;
-            // I did a lot of casting to make TheChar an FString
-            FString TheChar;
-            bool IsBraakable;
             for (TheBackTrack = TheIndex; TheBackTrack > 0; TheBackTrack--)
             {
+                TheTextOutIndex = 0;
                 IsBraakable = false;
                 TheChar.Empty();
                 TheChar.AppendChar(TheInputText[TheBackTrack]);
@@ -252,54 +275,39 @@ bool UBFL_UnrealWordWrap::WrapTxt(FString InputText, int32 WrapAt, int32 TabLen,
                         break;
                     }
                 } // end for i
-                // Is Breakable
+                // Is Breakable Character
                 if (IsBraakable)
                 {
-                    // Check to see if the Backline is larget than WrapAt or we loop
-                    if (TheBackline <= WrapAt)
+                    int32 TheLen = TextOut.Len();
+                    // TheBackTrack is the index of the InputText and not the same as TextOut,
+                    // due to inserting New Line Feed, so it is off more every insert
+                    // so we need to go backwards from the End of the string to find it
+                    for (int32 ThisIndex = TheLen - 1; ThisIndex > 0; ThisIndex--)
                     {
-                        if (TheLastIndex == -1 || TheLastIndex != TheBackTrack)
+                        ThisChar.Empty();
+                        ThisChar.AppendChar(TextOut[ThisIndex]);
+                        if (TheChar.Compare(ThisChar) == 0)
                         {
-                            TheLastIndex = TheBackTrack;
+                            TheTextOutIndex = ThisIndex;
+                            break;
                         }
-                        else
-                        {
-                            if (TheLastIndex == TheBackTrack)
-                            {
-                                // Reset the for loop to prevent an endless loop
-                                TheBackTrack = TheIndex;
-                                TheBackline = 0;
-                                continue;
-                            }
-                        }
-                        int32 TheLen = TextOut.Len();
-                        // Remove all characters going back to the space
-                        TextOut.RemoveAt(TheLen + 1 - (TheIndex - TheBackTrack), TheIndex - TheBackTrack);
-                        TextOut.AppendChar(TheLineFeed); // Mark Line Feed
-                        TheCounter = 1; // Reset the Counter
-                        TheIndex = TheBackTrack; // Reset the Index
-                        break;
-                    }
-                    else
-                    {
-                        if (TextOut.Len() + TheBackText.Len() >= TheInputText.Len())
-                        {  
-                            TextOut.Append(TheBackText); // Mark Line Feed
-                            if (BreakTxt(TextOut, TextOut)) { return true; }
-                            else { return false; }
-                        }
-                        // Reset the for loop
-                        TheBackTrack = TheIndex;
-                        TheBackline = 0;
-                        continue;
-                    } // end if (TheBackline <= WrapAt)
+                    } // end for
+                    // Remove all characters going back to the breakable character
+                    TextOut.RemoveAt(TheTextOutIndex + 1, TheLen - TheTextOutIndex);
+                    TextOut.AppendChar('\n'); // Mark Line Feed
+                    TheCounter = 1; // Reset the Counter
+                    TheIndex = TheBackTrack + 1; // Reset the Index
+                    break;
                 } // end if (TheChar.Compare(
                 TheBackline++;
             } // end for (TheBackTrack
         } // end if (isspace(TheInputText[theIndex]))
     } // end while (theIndex < TheInputText.Len())
     // We should not hit this code unless the size is too small
-    if (BreakTxt(TextOut, TextOut)) { return true; }
+    if (BreakTxt(TextOut, TextOut))
+    {
+        return true;
+    }
     else { return false; }
 } // end WrapTxt
 // ****************************************************************************
@@ -311,18 +319,16 @@ bool UBFL_UnrealWordWrap::WrapTxt(FString InputText, int32 WrapAt, int32 TabLen,
 /// <returns>true if success, false if fail</returns>
 bool UBFL_UnrealWordWrap::BreakTxt(FString InputText, FString& TheTextOut)
 {
-    // LF Line Feed
-    TCHAR TheLineFeed = '\n';
     // Line Feed String
-    FString LF;
-    LF.AppendChar(TheLineFeed);
+    FString TheLineFeed;
+    TheLineFeed.AppendChar('\n');
     FString TheChar;
-    TheTextOut.Empty(); 
+    TheTextOut.Empty();
     for (int32 TheCounter = 0; TheCounter < InputText.Len(); TheCounter++)
     {
         TheChar.Empty();
         TheChar.AppendChar(InputText[TheCounter]);
-        if (TheChar.Compare(LF) == 0) { TheTextOut.Append("<br>"); }
+        if (TheChar.Compare(TheLineFeed) == 0) { TheTextOut.Append("<br>"); }
         else { TheTextOut.Append(TheChar); }
     }
     return (TheTextOut.Len() > 0);
