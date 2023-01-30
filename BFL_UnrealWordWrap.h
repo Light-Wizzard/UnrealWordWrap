@@ -23,7 +23,7 @@ class UNREALWORDWRAP_API UBFL_UnrealWordWrap : public UBlueprintFunctionLibrary
 			static bool LoadTxtFile(FString InputFileName, FString &TextOut);
 
 		UFUNCTION(BlueprintPure, Category = "Custom", meta = (Keywords = "WrapTxt"))
-			static bool WrapTxt(FString InputText, int32 wrap, int32 TabLen, FString& TextOut);
+			static bool WrapTxt(FString InputText, int32 wrapAt, int32 TabLen, FString& TextOut);
 
 		UFUNCTION(BlueprintCallable, Category = "Custom", meta = (Keywords = "SaveTxtFile"))
 			static bool SaveTxtFile(FString OutputFileName, FString SaveText);
