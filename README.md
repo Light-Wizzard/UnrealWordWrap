@@ -89,6 +89,8 @@ I do not have a Mac or iOS License so I cannot make those packages, but below is
 
 You will find a clean.bat I run to cut the size from 4 GB to 1.78 GB, you will need to right click on the project file UnrealWordWrap.uproject, and Generate Visual Studeo Project Files, and rebuild the project, then open the project in Unreal Engine, and rebuild it if required.
 
+Uploading now!
+
 [Unreal Engine Project File Zipped is around 1.78 GB](https://lightwizzard.com/github/UnrealWordWrap.zip)
 
 ### End-of-File
