@@ -85,9 +85,9 @@ I do not have a Mac or iOS so I cannot make those releases, but I do have the so
 
 ## Downloads
 
-I only made the Windows version for now, if you want Linux let me know, I will try to get back to this and make one for it, I do not have a Mac or iOS License so I cannot make those packages, but here is the Soure, you can make it yourself.
+I do not have a Mac or iOS License so I cannot make those packages, but below is the Soure, you can make it yourself.
 
-You will find a clean.bat I run to cut the size from 4 GB to 1.78 GB, you will need to right click on the project file UnrealWordWrap.uproject, and Generate Visual Studeo Project Files, and rebuild the project, then open the project in Unreal Engine, I rebuild, not sure if it is required.
+You will find a clean.bat I run to cut the size from 4 GB to 1.78 GB, you will need to right click on the project file UnrealWordWrap.uproject, and Generate Visual Studeo Project Files, and rebuild the project, then open the project in Unreal Engine, and rebuild it if required.
 
 [Unreal Engine Project File Zipped is around 1.78 GB](https://lightwizzard.com/github/UnrealWordWrap.zip)
 
